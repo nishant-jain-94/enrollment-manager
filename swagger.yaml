@@ -1,0 +1,131 @@
+swagger: "2.0"
+info:
+  title: Enrollment Manager
+  description: Manages enrollment of Cadets
+  version: 0.0.1
+  servers:
+    - url: http://localhost:8090/
+      description: Local Development Server
+definitions:
+  User:
+    type: object
+    properties:
+      associateId:
+        type: string
+      batch:
+        type: string
+      overallScore:
+        type: string
+      uiLayer:
+        type: string
+      mwLayer:
+        type: string
+      lgLayer:
+        type: string
+  EnrolledEvent:
+    type: object
+    properties:
+      summary:
+        type: string
+        description: Title of the Event
+      start:
+        type: object
+        schema:
+          $ref: "#/definitions/EventTime"
+      end:
+        type: object
+        schema:
+          $ref: "#/definitions/EventTime"
+  EventTime:
+    type: object
+    properties:
+      dateTime:
+        type: string
+        description: Refers to the DateTime of the Event
+      timeZone:
+        type: string
+        description: Refers to the TimeZone of the Event
+  Event:
+    type: object
+    properties:
+      kind:
+        type: string
+      id:
+        type: string
+        description: Unique Id for an Event
+      summary:
+        type: string
+        description: Title of the Event
+      created:
+        type: string
+      updated:
+        type: string
+      start:
+        $ref: "#/definitions/EventTime"
+      end:
+        $ref: "#/definitions/EventTime"
+      recurringEventId:
+        type: string
+      iCalUID:
+        type: string
+        description: Same ID for recurrent event 
+      status:
+        type: string
+        enum:
+          - confirmed
+          - tentative
+          - cancelled
+paths:
+  /events:
+    get:
+      summary: Returns a list of all the events at StackRoute
+      responses:
+        '200':
+          description: A JSON Array of all the events
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: "#/definitions/Event"
+  /user/{associateId}/events:
+    get:
+      summary: Returns a list of the events which the user has enrolled into.
+      responses:
+        '200':
+          description: A JSON Array of all the events which the user has enrolled into
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: "#/definitions/Event"
+    post:
+      summary: Enrolls an user to an event
+      consumes: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/EnrolledEvent"
+      responses:
+        '201':
+          description: Success
+  /import/users:
+    post:
+      summary: Imports all the users from the uploaded file
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: users
+          type: file
+          description: The file containing KBA Scores of all the users
+          required: true
+      responses:
+        '200':
+          description: A JSON Array of imported users
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: "#/definitions/User"
