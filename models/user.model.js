@@ -15,18 +15,7 @@ const userSchema = new Schema({
   lgLayer: Number,
   eligibleModules: [String],
   eligibleModuleTypes: [String],
-  events: [{
-    id: String,
-    recurringEventId: String,
-    start: {
-      dateTime: String,
-      timeZone: String,
-    },
-    end: {
-      dateTime: String,
-      timeZone: String,
-    },
-  }],
+  enrolledEvents: Array,
 });
 
 userSchema.virtual('Associate ID').set(function associateIdSetter(value) {
@@ -64,6 +53,20 @@ userSchema.virtual('Stack').set(function stackSetter(value) {
 userSchema.statics.enrollUsers = async function enrollUsers(users) {
   const insertedDocs = await this.insertMany(users);
   return insertedDocs;
+};
+
+userSchema.statics.enrollUserToEvent = async function enrollUserToEvent(associateId, event) {
+  const updatedDoc = await this.updateOne(
+    { associateId },
+    { $push: { enrolledEvents: event } },
+    { new: true },
+  );
+  return updatedDoc;
+};
+
+userSchema.statics.getEnrolledEvents = async function getEnrolledEvents(associateId) {
+  const enrolledEvents = await this.findOne({ associateId }).select('enrolledEvents').exec();
+  return enrolledEvents;
 };
 
 module.exports = mongoose.model('users', userSchema);

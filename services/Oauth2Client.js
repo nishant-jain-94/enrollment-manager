@@ -7,7 +7,7 @@ const OAuth2Client = () => {
   const payload = {
     iss: process.env.client_email,
     aud: 'https://www.googleapis.com/oauth2/v4/token',
-    scope: 'https://www.googleapis.com/auth/calendar',
+    scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/gmail.readonly https://mail.google.com/ https://www.googleapis.com/auth/gmail.modify',
     exp: Math.floor(Date.now() / 1000) + (60 * 60),
     iat: Math.floor(Date.now() / 1000) - 30,
   };

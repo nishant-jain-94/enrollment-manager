@@ -6,12 +6,14 @@ const cors = require('cors');
 const config = require('./config');
 const userController = require('./apis/enroll-users/enroll-users.controller');
 const eventsController = require('./apis/events/events.controller');
+const tokenController = require('./apis/token/token.controller');
 
 const app = express();
 
 mongoose.connect(`${config.MONGODB_URL}/users`, { useNewUrlParser: true });
 
 app.use(cors());
+app.use('/token', tokenController);
 app.use('/enroll', userController);
 app.use('/events', eventsController);
 

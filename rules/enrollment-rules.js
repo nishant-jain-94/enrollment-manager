@@ -1,50 +1,56 @@
 const { Engine } = require('json-rules-engine');
 
-const overallScoreBetween40And70 = [
-  {
-    fact: 'overallScore',
-    operator: 'greaterThanInclusive',
-    value: 40,
-  },
-  {
-    fact: 'overallScore',
-    operator: 'lessThan',
-    value: 70,
-  },
-];
+const overallScoreBetween40And70 = {
+  all: [
+    {
+      fact: 'overallScore',
+      operator: 'greaterThanInclusive',
+      value: 40,
+    },
+    {
+      fact: 'overallScore',
+      operator: 'lessThan',
+      value: 70,
+    },
+  ],
+};
 
-const uiScoreBetween60And70 = [
-  {
-    fact: 'uiLayer',
-    operator: 'greaterThanInclusive',
-    value: 60,
-  },
-  {
-    fact: 'uiLayer',
-    operator: 'lessThan',
-    value: 70,
-  },
-];
+const uiScoreBetween60And70 = {
+  all: [
+    {
+      fact: 'uiLayer',
+      operator: 'greaterThanInclusive',
+      value: 60,
+    },
+    {
+      fact: 'uiLayer',
+      operator: 'lessThan',
+      value: 70,
+    },
+  ],
+};
 
-const mwScoreBetween60And70 = [
-  {
-    fact: 'mwLayer',
-    operator: 'greaterThanInclusive',
-    value: 60,
-  },
-  {
-    fact: 'mwLayer',
-    operator: 'lessThan',
-    value: 70,
-  },
-];
+const mwScoreBetween60And70 = {
+  all: [
+    {
+      fact: 'mwLayer',
+      operator: 'greaterThanInclusive',
+      value: 60,
+    },
+    {
+      fact: 'mwLayer',
+      operator: 'lessThan',
+      value: 70,
+    },
+  ],
+};
 
 const MW_MICRO_CREDENTIALLING = {
   conditions: {
     any: [
       {
         all: [
-          ...overallScoreBetween40And70,
+          overallScoreBetween40And70,
           {
             fact: 'uiLayer',
             operator: 'greaterThanInclusive',
@@ -59,11 +65,11 @@ const MW_MICRO_CREDENTIALLING = {
       },
       {
         all: [
-          ...overallScoreBetween40And70,
+          overallScoreBetween40And70,
           {
             any: [
-              ...uiScoreBetween60And70,
-              ...mwScoreBetween60And70,
+              uiScoreBetween60And70,
+              mwScoreBetween60And70,
             ],
           },
           {
@@ -85,7 +91,7 @@ const MW_MICRO_CREDENTIALLING = {
 const conditionsForCapsuleOrSBA = {
   conditions: {
     all: [
-      ...overallScoreBetween40And70,
+      overallScoreBetween40And70,
       {
         fact: 'uiLayer',
         operator: 'greaterThanInclusive',
@@ -98,7 +104,7 @@ const conditionsForCapsuleOrSBA = {
       },
     ],
   },
-}
+};
 
 const CAPSULE = {
   ...conditionsForCapsuleOrSBA,
@@ -119,11 +125,11 @@ const UI_MICRO_CREDENTIALLING = {
     any: [
       {
         all: [
-          ...overallScoreBetween40And70,
+          overallScoreBetween40And70,
           {
             any: [
-              ...uiScoreBetween60And70,
-              ...mwScoreBetween60And70,
+              uiScoreBetween60And70,
+              mwScoreBetween60And70,
             ],
           },
           {
@@ -137,7 +143,7 @@ const UI_MICRO_CREDENTIALLING = {
       },
       {
         all: [
-          ...overallScoreBetween40And70,
+          overallScoreBetween40And70,
           {
             fact: 'uiLayer',
             operator: 'lessThan',
@@ -160,7 +166,7 @@ const UI_MICRO_CREDENTIALLING = {
 const FSD_EXPRESS = {
   conditions: {
     all: [
-      ...overallScoreBetween40And70,
+      overallScoreBetween40And70,
       {
         fact: 'uiLayer',
         operator: 'lessThan',
@@ -175,8 +181,8 @@ const FSD_EXPRESS = {
         fact: 'lgLayer',
         operator: 'greaterThanInclusive',
         value: 60,
-      }
-    ]
+      },
+    ],
   },
   event: {
     type: 'FSD_EXPRESS',
@@ -186,7 +192,7 @@ const FSD_EXPRESS = {
 const FSD_COMPLETE = {
   conditions: {
     all: [
-      ...overallScoreBetween40And70,
+      overallScoreBetween40And70,
       {
         fact: 'uiLayer',
         operator: 'lessThan',

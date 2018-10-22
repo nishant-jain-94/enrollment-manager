@@ -12,19 +12,16 @@ const getCalendarEvents = async (calendarTitles) => {
 
     const eventsOfCalendars = await Promise.all(calendarTitles.map(async (calendarTitle) => {
       const calendarId = await getCalendarIdByTitle(calendarTitle);
-      console.log('CalendarId');
-      console.log(calendarId);
       let events;
       if (calendarId) {
         events = await calendar.events.list({
           calendarId,
           timeMin: (new Date()).toISOString(),
           maxResults: 100,
-          singleEvents: true,
-          orderBy: 'startTime',
+          singleEvents: false,
         });
       }
-      return events ? events.data : [];
+      return events ? { ...events.data, calendarId } : {};
     }));
 
     return [].concat(...eventsOfCalendars);
@@ -33,4 +30,23 @@ const getCalendarEvents = async (calendarTitles) => {
   }
 };
 
-module.exports = { getCalendarEvents };
+const addAttendees = async (calendarId, event, attendee) => {
+  const oAuth2Client = await getClient();
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: oAuth2Client,
+  });
+  const response = await calendar.events.patch({
+    calendarId,
+    eventId: event.id,
+    sendNotifications: true,
+    sendUpdates: 'all',
+    requestBody: {
+      attendees: [...event.attendees, attendee],
+      recurrence: event.recurrence,
+    },
+  });
+  return response;
+};
+
+module.exports = { getCalendarEvents, addAttendees };

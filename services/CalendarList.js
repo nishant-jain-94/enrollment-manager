@@ -13,11 +13,7 @@ const CalendarList = () => {
       });
       const response = await calendar.calendarList.list();
       listOfCalendars = response.data.items;
-      console.log('list of calendars');
-      console.log(listOfCalendars);
       matchedCalendars.push(...listOfCalendars.filter(c => c.summary === calendarTitle));
-      console.log('matchedCalendars');
-      console.log(matchedCalendars);
     }
     return matchedCalendars[0] ? matchedCalendars[0].id : '';
   };
