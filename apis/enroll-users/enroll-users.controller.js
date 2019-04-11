@@ -1,4 +1,5 @@
 const express = require('express');
+const Json2csvParser = require('json2csv').Parser;
 
 const enrollmentRule = require('../../rules/enrollment-rules');
 const loadCsvData = require('../../middlewares/loadCsvData.middleware');
@@ -34,6 +35,76 @@ router.post('/users', upload, loadCsvData, async (req, res, next) => {
     }));
     const enrolledUsers = await UserModel.enrollUsers(usersWithAssignedModules);
     res.json(enrolledUsers);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/users/csv', async (req, res, next) => {
+  try {
+    const fields = [
+      {
+        label: 'Associate ID',
+        default: 'NA',
+        value: 'associateId',
+      },
+      {
+        label: 'name',
+        default: 'NA',
+        value: 'name',
+      },
+      {
+        label: 'Batch',
+        default: 'NA',
+        value: 'batch',
+      },
+      {
+        label: 'Stack',
+        default: 'NA',
+        value: 'stack',
+      },
+      {
+        label: 'Overall Score',
+        default: 'NA',
+        value: 'overallScore',
+      },
+      {
+        label: 'UI Layer',
+        default: 'NA',
+        value: 'uiLayer',
+      },
+      {
+        label: 'MW Layer',
+        default: 'NA',
+        value: 'mwLayer',
+      },
+      {
+        label: 'LG Layer',
+        default: 'NA',
+        value: 'lgLayer',
+      },
+      {
+        label: 'Eligible Modules',
+        default: 'NA',
+        value: row => row.eligibleModules.join(','),
+      },
+      {
+        label: 'Enrolled Event',
+        default: 'Yet To Enroll',
+        value: (row) => {
+          if (row.enrolledEvents.length === 0) {
+            return undefined;
+          }
+          return row.enrolledEvents.map(e => `${e.summary}-${e.start.dateTime}`).join(',');
+        },
+      },
+    ];
+    const parser = new Json2csvParser({ fields });
+    const enrolledUsers = await UserModel.find({}).exec();
+    const csv = parser.parse(enrolledUsers);
+    res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csv);
   } catch (err) {
     next(err);
   }

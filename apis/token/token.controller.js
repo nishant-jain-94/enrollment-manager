@@ -43,7 +43,7 @@ router.post('/', async (req, res, next) => {
   };
   const emailResponse = await sendEmail(email);
   res.status(201).json(emailResponse);
-  next();
+  // next();
 });
 
 router.use(status404Handler);

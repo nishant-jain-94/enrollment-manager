@@ -1,12 +1,14 @@
 version: '3'
 services:
-  enrollment-manager:
-    build: ./
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-  enrollment-db:
+  # enrollment-manager:
+  #   build: ./
+  #   ports:
+  #     - "8082:8080"
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - MONGODB_URL=
+  db:
     image: mvertes/alpine-mongo
     ports:
       - "27017:27017"

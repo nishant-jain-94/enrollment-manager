@@ -12,4 +12,15 @@ describe('Rules', () => {
     events[0].should.have.property('type');
     events[0].type.should.be.exactly('SBA');
   });
+
+  test('Answer what courses Abhijeet would be enrolled into', async () => {
+    const user = {
+      overallScore: 58,
+      uiLayer: 65,
+      mwLayer: 54,
+      lgLayer: 63,
+    };
+    const events = await courseActivator.run(user);
+    console.log(events);
+  });
 });
